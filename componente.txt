@@ -1,0 +1,79 @@
+url
+https://dwqs.github.io/v2-table/
+
+HTML Jquery tables
+ <table id="tblValues" class="table dataTable  table-striped table-bordered table-hover table-condensed" style="width:100%">
+        <thead>
+            <tr>
+                @*<th><input type="checkbox" class="chbSelectAll" style="width: 27% !important" /></th>*@
+                <th>Id</th>
+                <th>Value</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+    </table>
+
+JS jquery tables
+$('#tblValues').DataTable({
+            "emptyTable": "No data available",
+            rowId: 'id',
+            "data": nsCueRule.CurrentValuesData,
+            'columnDefs': [
+                {
+                    'targets': 0,
+                    'checkboxes': {
+                        'selectRow': true
+                    },
+                    'createdCell': function (td, cellData, rowData, row, col) {
+                        for (var i = 0; i < nsCueRule.CurrentIdsSelected.length; i++) {
+                            if (rowData.id == nsCueRule.CurrentIdsSelected[i]) {
+                                this.api().cell(td).checkboxes.select();
+                                break;
+                            }
+                        }
+                    }
+                }
+            ],
+            "columns": [
+                {
+                    "data": "id"
+                },
+                { "data": "value" },
+                { "data": "description" }
+            ],
+            'select': {
+                'style': 'multi'
+            },
+            "order": [[1, 'asc']]
+        });
+
+MAS CODIGO DE JS
+
+                        nsCueRule.CurrentTable = $("#tblValues").DataTable();
+                        $('input[type=search]').val('');
+                        nsCueRule.CurrentTable.search("").draw();
+                        nsCueRule.CurrentTable.clear();
+                        nsCueRule.CurrentTable.rows.add(rp.cueRuleTemplateValues).draw();
+                        $('#dialog_valueList').dialog('open');
+
+   var rows_selected = nsCueRule.CurrentTable.column(0).checkboxes.selected();
+                $.each(rows_selected, function (idx, ele) {
+                    for (var i = 0; i < nsCueRule.CurrentValuesData.length; i++) {
+                        if (ele == nsCueRule.CurrentValuesData[i].id) {
+                            currentSelectedValuesBuffer.push(nsCueRule.CurrentValuesData[i].value)
+                            break;
+                        }
+                    }
+                    $("#commandCueRuleValue_" + nsCueRule.CurrentCUERuleTemplateId).nextAll("a").css("border", "2px solid #ccc");
+                });
+                $("#commandCueRuleValue_" + nsCueRule.CurrentCUERuleTemplateId).val(currentSelectedValuesBuffer.join(";"))
+                $("#spanCueRuleValue_" + nsCueRule.CurrentCUERuleTemplateId).html(currentSelectedValuesBuffer.length + " Selected");
+                nsCueRule.CurrentIdsSelected = [];
+                nsCueRule.CurrentCUERuleTemplateId = 0;
+                nsCueRule.CurrentValuesData = [];
+                nsCueRule.CurrentTable = null;
+
+
+
+
+
