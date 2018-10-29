@@ -228,33 +228,19 @@
                         </div>
 
                         <div class="row" v-if="currentTrigger.template">
-
-                            <div class="col-lg-6" v-if="appData.dataSourcesData">
-                                
+                            <div class="col-lg-6" >
+                                <div class="form-group">
+                                    <label>table</label>
+                                    <div class="input-group">
+                                        <div v-for="rule in filteredConfigRule" v-cloak>
+                                            <h5 v-for="item in rule">
+                                                {{item.value}} - {{item.active}} - {{item.cueRuleTemplateId}}
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>                                     
                             </div>
-
-                            <table>
-                                <thead>
-                                    <th>
-                                        <tr></tr>
-                                    </th>
-                                </thead>
-                                <tbody>
-                                    <th>
-                                        <tr></tr>
-                                    </th>
-                                </tbody>
-                            </table>
-
-
                         </div>
-                        
-
-
-
-
-
-
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal" v-on:click="cancelCreationNewTrigger">
@@ -348,17 +334,31 @@ var appCueRule = new Vue({
         dataSourceChanged: function () {
             //Clean data
             //this.currentTrigger.template = null;
-        }
+        }, 
+
     },
     computed: {
-        filteredTemplates() {
+        filteredTemplates: function() {
             var filteredData = new Array();
             for (var i = 0; i < this.templatesData.length; i++) {
                 if (this.templatesData[i].datasourceId == this.currentTrigger.datasource)
                     filteredData.push(this.templatesData[i]);
             }
             return filteredData;
-        }
+        },
+        filteredConfigRule: function () {
+
+            var cueRuleTemplateValue = new Array();
+            for(var i = 0; i < this.templatesData.length; i++) {
+                if(this.templatesData[i].datasourceId == this.currentTrigger.datasource) {
+                    if(this.templatesData[i].jsonConfigRule == 1){
+                        cueRuleTemplateValue.push(this.templatesData[i].cueRuleTemplateValues);
+                    }
+                }
+            }
+            console.log(cueRuleTemplateValue);
+            return cueRuleTemplateValue;
+        }         
     }
 });
 
